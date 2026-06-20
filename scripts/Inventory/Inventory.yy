@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"Inventory",
   "parent":{
-    "name":"Items",
-    "path":"folders/Items.yy",
+    "name":"Item",
+    "path":"folders/Structs/Item.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

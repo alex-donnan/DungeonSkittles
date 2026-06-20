@@ -1,4 +1,4 @@
-rpm *= 1.05; 
+timer *= 0.95;
 tilt_direction = point_direction(other.x, other.y, x, y);
 accelerate += 1;
 

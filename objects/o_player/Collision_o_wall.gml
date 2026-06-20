@@ -1,4 +1,4 @@
-rpm *= 0.95;
+timer *= 1.05;
 accelerate += 1;
 
 while (place_meeting(x, y, o_wall)) {
@@ -6,4 +6,21 @@ while (place_meeting(x, y, o_wall)) {
     y -= lengthdir_y(1, tilt_direction);
 }
 
-tilt_direction += random_range(135, 180) * (spin_direction == 0 ? -1 : 1);
+var col_dir = ((tilt_direction + 27.5) div 45) * 45;
+var x_pos = dcos(tilt_direction);
+var y_pos = -dsin(tilt_direction);
+
+if (col_dir == 0 || col_dir == 180) {
+    x_pos *= -1;
+} else if (col_dir == 90 || col_dir == 270) {
+    y_pos *= -1;
+} else if (col_dir == 135 || col_dir = 315) {
+    var sign_mod = (sign(x_pos) == sign(y_pos)) ? 1 : -1;
+    x_pos = dsin(tilt_direction) * sign_mod;
+    y_pos = dcos(tilt_direction) * sign_mod;
+} else {
+    var sign_mod = (sign(x_pos) != sign(y_pos)) ? 1 : -1;
+    x_pos = dsin(tilt_direction) * sign_mod;
+    y_pos = dcos(tilt_direction) * sign_mod;
+}
+tilt_direction = point_direction(0, 0, x_pos, y_pos);
