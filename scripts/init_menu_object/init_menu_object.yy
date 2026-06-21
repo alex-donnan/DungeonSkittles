@@ -1,12 +1,12 @@
 {
   "$GMScript":"v1",
-  "%Name":"init_items",
+  "%Name":"init_menu_object",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"init_items",
+  "name":"init_menu_object",
   "parent":{
-    "name":"Item",
-    "path":"folders/Structs/Item.yy",
+    "name":"Menus",
+    "path":"folders/Structs/Menus.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

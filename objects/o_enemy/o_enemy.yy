@@ -27,7 +27,7 @@
   "physicsShapePoints":[],
   "physicsStartAwake":true,
   "properties":[
-    {"$GMObjectProperty":"v2","%Name":"armor","filters":[],"listItems":[],"multiselect":false,"name":"armor","rangeEnabled":false,"rangeMax":5.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"3","varType":1,},
+    {"$GMObjectProperty":"v2","%Name":"armor","filters":[],"listItems":[],"multiselect":false,"name":"armor","rangeEnabled":false,"rangeMax":5.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"1","varType":1,},
   ],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",

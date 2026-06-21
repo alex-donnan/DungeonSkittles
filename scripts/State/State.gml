@@ -1,21 +1,15 @@
-function State(_name, _vars = {}, _enter = undefined, _update = undefined, _leave = undefined) constructor {
+function State(_name) constructor {
     id = StateMachine.state_id++;
     name = _name;
-    vars = _vars;
-    state_machine = undefined;
+    parent = undefined;
     
-    enter = (!is_null(_enter)) ? _enter : function() {
-        return;
-    };
-    update = (!is_null(_update)) ? _update : function() {
-        return;
-    };
-    leave = (!is_null(_leave)) ? _leave : function() {
-        return;
-    };
+    // State steps
+    enter = function() {};
+    update = function() {};
+    leave = function() {};
     
-    set_function = function(_function, _type) {
-        self[$ _type] = method(self, _function);
+    set_function = function(_type, _function) {
+        self[$ _type] = _function;
         return self;
     }
 }

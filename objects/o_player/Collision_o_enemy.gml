@@ -25,4 +25,4 @@ if (col_dir == 0 || col_dir == 180) {
 }
 tilt_direction = point_direction(0, 0, x_pos, y_pos);
 
-other.armor = 0;
+other.armor--;

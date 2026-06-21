@@ -1,4 +1,4 @@
-function StateMachine() constructor {
+function StateMachine(_parent) constructor {
     static state_id = 0;
     states = {};
     active_states = {
@@ -6,16 +6,20 @@ function StateMachine() constructor {
         next:undefined,
         last: undefined
     }
+    parent = _parent
     
     // Handle state add/remove
     add_state = function(_state) {
         if (!is_instanceof(_state, State)) {
             print("Could not add non-state to machine");
-            return;
+            return self;
         }
-            
+        
+        method(parent, _state.enter);
+        method(parent, _state.update);
+        method(parent, _state.leave);
+        
         states[$ _state.name] = _state;
-        _state.state_machine = self;
         
         return self;
     }

@@ -1,0 +1,1 @@
+draw_sprite_ext(sprite_index, 0, 1, 1, 1, 1, 0, c_white, (hovered) ? 0.5 : 1);
