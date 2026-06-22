@@ -2,13 +2,13 @@
 	Ensures a valid shader exists based on width and height
 */
 function surface_check(_surface, _w, _h, _function = undefined, _refresh = false) {
-	if ((
+	if (
             surface_exists(_surface) &&
             (surface_get_width(_surface) != _w || surface_get_height(_surface) != _h)
-        ) || _refresh 
     ) {
 		surface_free(_surface);
 	}
+    
 	if (is_null(_surface)) {
         _surface = surface_create(_w, _h);
         _refresh = true;

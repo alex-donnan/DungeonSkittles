@@ -1,6 +1,8 @@
 #macro WIDTH 480
 #macro HEIGHT 270
 
+show_debug_overlay(true);
+
 window_set_size(WIDTH * 2, HEIGHT * 2);
 display_set_gui_size(WIDTH * 2, HEIGHT * 2);
 gpu_set_texfilter(false);

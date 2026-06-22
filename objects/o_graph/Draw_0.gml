@@ -1,35 +1,54 @@
 draw_sprite_ext(sprite_index, 0, x, y, image_xscale, image_yscale, 0, c_white, image_alpha);
 
-shader_set(sh_graph);
-    shader_set_uniform_f(
-        shader_get_uniform(sh_graph, "start_rpm"),
-        o_control.player_stats.start_rpm
-    );
-    
-    shader_set_uniform_f(
-        shader_get_uniform(sh_graph, "half_life"),
-        o_control.player_stats.half_life
-    );
-    
-    shader_set_uniform_f(
-        shader_get_uniform(sh_graph, "radius"),
-        o_control.player_stats.radius
-    );
-    
-    shader_set_uniform_f(
-        shader_get_uniform(sh_graph, "weight"),
-        o_control.player_stats.weight / 1000
-    );
-    
-    shader_set_uniform_f(
-        shader_get_uniform(sh_graph, "height"),
-        o_control.player_stats.height
-    );
-    
-    shader_set_uniform_f(
-        shader_get_uniform(sh_graph, "size"),
-        width-6, height-6
-    );
-    
-    draw_rectangle_colour(x + 3, y + 3, x + width - 3, y + height - 5, c_black, c_black, c_black, c_black, false);
-shader_reset();
+graph_surface = surface_check(
+    graph_surface,
+    width, height,
+    function() {
+        draw_clear_alpha(c_black, 0);
+        
+        shader_set(sh_graph);
+            shader_set_uniform_f(
+                shader_get_uniform(sh_graph, "start_rpm"),
+                start_rpm
+            );
+            
+            shader_set_uniform_f(
+                shader_get_uniform(sh_graph, "half_life"),
+                half_life
+            );
+            
+            shader_set_uniform_f(
+                shader_get_uniform(sh_graph, "radius"),
+                radius
+            );
+            
+            shader_set_uniform_f(
+                shader_get_uniform(sh_graph, "weight"),
+                weight / 1000
+            );
+            
+            shader_set_uniform_f(
+                shader_get_uniform(sh_graph, "height"),
+                cm_height
+            );
+            
+            shader_set_uniform_f(
+                shader_get_uniform(sh_graph, "size"),
+                width, height
+            );
+            
+            draw_primitive_begin_texture(pr_trianglelist, -1);
+                draw_vertex_texture(0, 0, 0, 1);
+                draw_vertex_texture(width, 0, 1, 1);
+                draw_vertex_texture(width, height, 1, 0);
+        
+                draw_vertex_texture(width, height, 1, 0);
+                draw_vertex_texture(0, height, 0, 0);
+                draw_vertex_texture(0, 0, 0, 1);
+            draw_primitive_end();
+        shader_reset();
+    },
+    true
+);
+
+draw_surface_stretched(graph_surface, x+3, y+3, width-6, height-8);

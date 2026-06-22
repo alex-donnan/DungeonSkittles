@@ -21,7 +21,7 @@ tilt_direction = lerp(
     0.3
 ) mod 360;
 tilt_amount = lerp(
-    tilt_amount + random_range(10 * (unstable_rpm / rpm), 10 + 10 * (unstable_rpm / rpm)),
+    tilt_amount + random_range(15 * (unstable_rpm / rpm), 10 + 15 * (unstable_rpm / rpm)),
     0,
     0.3 + (0.2 * (weight / 10))
 );
