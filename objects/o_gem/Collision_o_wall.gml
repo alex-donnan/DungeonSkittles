@@ -1,0 +1,23 @@
+while (place_meeting(x, y, o_wall)) {
+    x -= lengthdir_x(1, direction);
+    y -= lengthdir_y(1, direction);
+}
+
+var col_dir = ((direction + 27.5) div 45) * 45;
+var x_pos = dcos(direction);
+var y_pos = -dsin(direction);
+
+if (col_dir == 0 || col_dir == 180) {
+    x_pos *= -1;
+} else if (col_dir == 90 || col_dir == 270) {
+    y_pos *= -1;
+} else if (col_dir == 135 || col_dir = 315) {
+    var sign_mod = (sign(x_pos) == sign(y_pos)) ? 1 : -1;
+    x_pos = dsin(direction) * sign_mod;
+    y_pos = dcos(direction) * sign_mod;
+} else {
+    var sign_mod = (sign(x_pos) != sign(y_pos)) ? 1 : -1;
+    x_pos = dsin(direction) * sign_mod;
+    y_pos = dcos(direction) * sign_mod;
+}
+direction = point_direction(0, 0, x_pos, y_pos);

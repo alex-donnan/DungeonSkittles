@@ -41,13 +41,19 @@ function StateMachine(_parent) constructor {
     
     // Update the states
     update = function() {
-        if (!is_null(active_states[$ "current"])) active_states[$ "current"].update();
-        
-        if (!is_null(active_states[$ "next"])) {
-            if (!is_null(active_states[$ "current"])) active_states[$ "current"].leave();
-            set_state(active_states[$ "next"].name, "current");
+        if (!is_null(active_states.next) && active_states.current == active_states.last) {
+            set_state(active_states.next.name, "current");
             set_state(undefined, "next");
-            active_states[$ "current"].enter();
+            active_states.current.enter();
+        }
+        
+        if (!is_null(active_states.current)) {
+            active_states.current.update();
+        
+            if (!is_null(active_states.next)) {
+                active_states.current.leave();
+                set_state(active_states.current.name, "last");
+            }
         }
     }
 }

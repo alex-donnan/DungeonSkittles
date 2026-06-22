@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"sh_graph",
+  "name":"sh_graph",
+  "parent":{
+    "name":"menu_graphics",
+    "path":"folders/Structs/Menus/menu_graphics.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

@@ -4,8 +4,8 @@ depth = 1000;
 follow = undefined;
 view_mat = array_create(16, 0);
 proj_mat = array_create(16, 0);
-width = 480;
-height = 270;
+width = WIDTH;
+height = HEIGHT;
 
 camera_shake = 0;
 

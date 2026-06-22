@@ -36,13 +36,6 @@ gem_state.add_state(
                 wait_timer++;
                 draw_y = 8 * dsin(wait_timer);
                 
-                var gem = instance_position(x, y, o_gem);
-                if (!is_null(gem)) {
-                    value += gem.value;
-                    draw_scale = min(2, 0.9 + (value / 10));
-                    instance_destroy(gem);
-                }
-                
                 var player = instance_nearest(x, y, o_player);
                 if (point_distance(x, y, player.x, player.y) < 32) {
                     wait_timer = 0;

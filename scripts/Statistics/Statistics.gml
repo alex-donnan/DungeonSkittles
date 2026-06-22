@@ -3,6 +3,12 @@ function Statistics() constructor {
     
     // Upgrades
     start_rpm = 400;
+    half_life = start_rpm / 20;
+    weight = 2;
+    height = 0.1;
+    radius = 2;
+    move_influence = 1.2;
+    move_speed = 2;
     
     // Random stats
     play_time = 0;

@@ -1,9 +1,7 @@
-global.menu_db = {};
-
 function Menu(_name) constructor {
     static menu_id = 5000;
     
-    global.menu_db[$ "_name"] = self;
+    o_control.menus[$ _name] = self;
     objects = {};
     active = true;
     
@@ -14,6 +12,7 @@ function Menu(_name) constructor {
             return self;
         }
         
+        _obj.menu = self;
         objects[$ _obj.name] = _obj;
         
         return self;
@@ -34,9 +33,20 @@ function Menu(_name) constructor {
             function(_name, _obj) {
                 if (_obj.parent.update) {
                     _obj.update();
+                    _obj.parent.update = false;
                 }
             }
         )
+    }
+    
+    // Animate objects
+    animate = function(_anim_name) {
+        struct_foreach(
+            objects,
+            method({ anim_name: _anim_name }, function(_name, _obj) {
+                _obj.play_animation(anim_name);
+            })
+        );
     }
     
     // Activate/Deactivate

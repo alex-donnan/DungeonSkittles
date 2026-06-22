@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"surface_check",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"surface_check",
+  "parent":{
+    "name":"Helpers",
+    "path":"folders/Helpers.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

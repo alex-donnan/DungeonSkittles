@@ -1,8 +1,15 @@
+#macro WIDTH 480
+#macro HEIGHT 270
+
+window_set_size(WIDTH * 2, HEIGHT * 2);
+display_set_gui_size(WIDTH * 2, HEIGHT * 2);
 gpu_set_texfilter(false);
 randomise();
 
-camera = instance_create_depth(x, y, 0, o_camera);
+camera = instance_create_depth(WIDTH / 2, HEIGHT / 2, 0, o_camera);
+player_stats = undefined;
 game_state = new StateMachine(self);
+next_room = rm_main;
 menus = {};
 
 // Main menu states
@@ -12,25 +19,63 @@ game_state.add_state(
             "enter",
             function() {
                 // Load?
-                player_stats = new Statistics();
-                var menu = new Menu("main_menu");
+                if (is_null(player_stats)) player_stats = new Statistics();
                 
-                with (o_button) {
-                    if (!is_null(menu_object)) menu.add_object(menu_object);
+                if (!struct_exists(menus, "main_menu")) {
+                    var menu = new Menu("main_menu");
+                    with (o_menu_object) {
+                        if (!is_null(menu_object)) menu.add_object(menu_object);
+                    }
+                    menu.activate();
+                    menu.animate("enter");
                 }
-                
-                menu.activate();
+            }
+        ).set_function(
+            "update",
+            function() {
+                menus[$ "main_menu"].update();
+            }
+        ).set_function(
+            "leave",
+            function() {
+                room_goto(next_room);
             }
         )
-);
+).add_state(
+    new State("game_end")
+        .set_function(
+            "enter",
+            function() {
+                // Save player stats for next time
+                game_end();
+            }
+        )
+)
 
 // Shop states
 game_state.add_state(
     new State("shop_menu")
         .set_function(
+            "enter",
+            function() {
+                if (!struct_exists(menus, "shop_menu")) {
+                    var menu = new Menu("shop_menu");
+                    with (o_menu_object) {
+                        if (!is_null(menu_object)) menu.add_object(menu_object);
+                    }
+                    menu.activate();
+                }
+            }
+        )
+        .set_function(
             "update",
             function() {
-                print("bean");
+                menus[$ "shop_menu"].update();
+            }    
+        ).set_function(
+            "leave",
+            function() {
+                room_goto(next_room);
             }
         )
 );
@@ -68,4 +113,4 @@ game_state.add_state(
 ).add_state(
     new State("dungeon_run")
 );
-game_state.set_state("dungeon_start", "next");
+game_state.set_state("main_menu", "next");
