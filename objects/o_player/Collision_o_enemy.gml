@@ -1,5 +1,5 @@
-timer *= 1.1;
-accelerate += 1;
+timer *= (rpm < unstable_rpm) ? 1.1 + random(0.6) : 1.1;
+accelerate += (rpm < unstable_rpm) ? 1 + random(1) : 1;
 
 while (place_meeting(x, y, o_enemy)) {
     x -= lengthdir_x(1, tilt_direction);

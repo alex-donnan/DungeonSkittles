@@ -1,3 +1,5 @@
+if (!active) exit;
+  
 draw_sprite_ext(sprite_index, 0, x, y, image_xscale, image_yscale, 0, c_white, image_alpha);
 
 graph_surface = surface_check(
@@ -35,6 +37,11 @@ graph_surface = surface_check(
             shader_set_uniform_f(
                 shader_get_uniform(sh_graph, "size"),
                 width, height
+            );
+            
+            shader_set_uniform_f(
+                shader_get_uniform(sh_graph, "max_size"),
+                max_width, max_height
             );
             
             draw_primitive_begin_texture(pr_trianglelist, -1);

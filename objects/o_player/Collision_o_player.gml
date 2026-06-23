@@ -1,6 +1,6 @@
 timer *= 0.95;
 tilt_direction = point_direction(other.x, other.y, x, y);
-accelerate += 1;
+accelerate += (rpm < unstable_rpm) ? 1 + random(1) : 1;
 
 while (place_meeting(x, y, o_player)) {
     x += lengthdir_x(1, tilt_direction);

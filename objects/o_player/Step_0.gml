@@ -20,8 +20,10 @@ tilt_direction = lerp(
     tilt_direction + random_range(-25, 25) + (tilt_amount / 60),
     0.3
 ) mod 360;
+
+var unstable_mod = 15 * (unstable_rpm / rpm);
 tilt_amount = lerp(
-    tilt_amount + random_range(15 * (unstable_rpm / rpm), 10 + 15 * (unstable_rpm / rpm)),
+    tilt_amount + random_range(unstable_mod, 10 + unstable_mod),
     0,
     0.3 + (0.2 * (weight / 10))
 );
@@ -33,6 +35,6 @@ y += lengthdir_y((move_speed + accelerate) * min(1, rpm / critical_rpm), tilt_di
 
 // Update animation speed and depth
 image_speed = min(1, max(0.1, rpm / 60));
-image_direction = 15 * -dcos(tilt_direction);
+image_direction = 10 * -dcos(tilt_direction);
 
 depth = -y;

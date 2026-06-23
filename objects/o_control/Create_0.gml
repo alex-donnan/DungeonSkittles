@@ -4,11 +4,20 @@
 show_debug_overlay(true);
 
 window_set_size(WIDTH * 2, HEIGHT * 2);
+window_center();
 display_set_gui_size(WIDTH * 2, HEIGHT * 2);
 gpu_set_texfilter(false);
 randomise();
 
-camera = instance_create_depth(WIDTH / 2, HEIGHT / 2, 0, o_camera);
+camera = instance_create_depth(
+    WIDTH / 2, HEIGHT / 2, 0,
+    o_camera,
+    {
+        width: WIDTH,
+        height: HEIGHT,
+        view: 7
+    }
+);
 player_stats = undefined;
 game_state = new StateMachine(self);
 next_room = rm_main;
@@ -20,17 +29,23 @@ game_state.add_state(
         .set_function(
             "enter",
             function() {
+                camera.x = WIDTH / 2;
+                camera.y = HEIGHT / 2;
+                
                 // Load?
                 if (is_null(player_stats)) player_stats = new Statistics();
                 
                 if (!struct_exists(menus, "main_menu")) {
                     var menu = new Menu("main_menu");
                     with (o_menu_object) {
-                        if (!is_null(menu_object)) menu.add_object(menu_object);
+                        if (!struct_exists(menu.objects, name) && string_starts_with(name, menu.name)) {
+                            menu.add_object(init_menu_object(name, self));
+                        }
                     }
-                    menu.activate();
-                    menu.animate("enter");
                 }
+                
+                menus[$ "main_menu"].activate();
+                menus[$ "main_menu"].animate("enter");
             }
         ).set_function(
             "update",
@@ -40,6 +55,7 @@ game_state.add_state(
         ).set_function(
             "leave",
             function() {
+                menus[$ "main_menu"].deactivate();
                 room_goto(next_room);
             }
         )
@@ -60,13 +76,19 @@ game_state.add_state(
         .set_function(
             "enter",
             function() {
+                camera.x = WIDTH / 2;
+                camera.y = HEIGHT / 2;
+                
                 if (!struct_exists(menus, "shop_menu")) {
                     var menu = new Menu("shop_menu");
                     with (o_menu_object) {
-                        if (!is_null(menu_object)) menu.add_object(menu_object);
+                        if (!struct_exists(menu.objects, name) && string_starts_with(name, menu.name)) {
+                            menu.add_object(init_menu_object(name, self));
+                        }
                     }
-                    menu.activate();
                 }
+                
+                menus[$ "shop_menu"].activate();
             }
         )
         .set_function(
@@ -77,6 +99,7 @@ game_state.add_state(
         ).set_function(
             "leave",
             function() {
+                menus[$ "shop_menu"].deactivate();
                 room_goto(next_room);
             }
         )
@@ -114,5 +137,20 @@ game_state.add_state(
         )
 ).add_state(
     new State("dungeon_run")
+        .set_function(
+            "update",
+            function() {
+                if (o_player.crashed) {
+                    game_state.set_state("shop_menu", "next");
+                    next_room = rm_shop;
+                }
+            }
+        ).set_function(
+            "leave",
+            function() {
+                camera.follow = undefined;
+                room_goto(next_room);
+            }
+        )
 );
 game_state.set_state("main_menu", "next");

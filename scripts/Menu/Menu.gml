@@ -2,6 +2,7 @@ function Menu(_name) constructor {
     static menu_id = 5000;
     
     o_control.menus[$ _name] = self;
+    name = _name;
     objects = {};
     active = true;
     
@@ -31,10 +32,7 @@ function Menu(_name) constructor {
         struct_foreach(
             objects,
             function(_name, _obj) {
-                if (_obj.parent.update) {
-                    _obj.update();
-                    _obj.parent.update = false;
-                }
+                _obj.update();
             }
         )
     }
@@ -55,7 +53,12 @@ function Menu(_name) constructor {
         struct_foreach(
             objects,
             function(_name, _obj) {
-                instance_activate_object(_obj.parent);
+                 with (_obj) {
+                    parent.active = true; 
+                    layer_sequence = layer_sequence_create("GUI", parent.x, parent.y, sequence);
+                    layer_sequence_instance = layer_sequence_get_instance(layer_sequence);
+                    layer_sequence_pause(layer_sequence);
+                 }
             }
         )
     }
@@ -65,7 +68,8 @@ function Menu(_name) constructor {
         struct_foreach(
             objects,
             function(_name, _obj) {
-                instance_deactivate_object(_obj.parent);
+                _obj.parent.active = false;
+                _obj.cleanup();
             }
         )
     }

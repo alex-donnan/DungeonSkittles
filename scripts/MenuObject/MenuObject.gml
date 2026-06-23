@@ -2,10 +2,12 @@ function MenuObject(_name, _type, _inst, _sequence) constructor {
     name = _name;
     type = _type;
     parent = _inst;
-    sequence = layer_sequence_create("GUI", _inst.x, _inst.y, _sequence);
-    sequence_instance = layer_sequence_get_instance(sequence);
-    layer_sequence_pause(sequence);
+    active = false;
     
+    sequence = _sequence;
+    layer_sequence = undefined
+    layer_sequence_instance = undefined;
+     
     animations = {};
     animating = false;
     
@@ -32,16 +34,24 @@ function MenuObject(_name, _type, _inst, _sequence) constructor {
     play_animation = function(_anim_name) {
         var anim = animations[$ _anim_name];
         if (!is_null(anim) && !animating) {
-            sequence_instance_override_object(sequence_instance, type, parent);
-            layer_sequence_headpos(sequence, anim.in);
-            layer_sequence_headdir(sequence, anim.dir);
+            sequence_instance_override_object(layer_sequence_instance, type, parent);
+            layer_sequence_headpos(layer_sequence, anim.in);
+            layer_sequence_headdir(layer_sequence, anim.dir);
             call_later(
                 anim.delay,
                 time_source_units_frames,
                 function() {
-                    layer_sequence_play(sequence);
+                    animating = true;
+                    layer_sequence_play(layer_sequence);
                 },
                 false
+            );
+            call_later(
+                anim.delay + anim.length,
+                time_source_units_frames,
+                function() {
+                    animating = false;
+                }
             );
         }
     }
@@ -52,8 +62,10 @@ function MenuObject(_name, _type, _inst, _sequence) constructor {
     }
     
     update = function() {
-        animating = !layer_sequence_is_finished(sequence);
-        return sub_update();   
+        if (parent.update) {
+            sub_update();
+            parent.update = false;
+        }
     }
     
     set_update = function(_function) {
@@ -68,6 +80,6 @@ function MenuObject(_name, _type, _inst, _sequence) constructor {
     
     // Cleanup
     cleanup = function() {
-        layer_sequence_destroy(sequence);
+        layer_sequence_destroy(layer_sequence);
     }
 }

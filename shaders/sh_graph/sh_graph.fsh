@@ -4,10 +4,9 @@
 varying vec2 v_vTexcoord;
 
 uniform float start_rpm, half_life, radius, weight, height;
-uniform vec2 size;
+uniform vec2 size, max_size;
 
 void main() {
-    vec2 max_size = vec2(400, 5000);
     vec2 coord = (v_vTexcoord * max_size);
     
     gl_FragColor = vec4(0.);
