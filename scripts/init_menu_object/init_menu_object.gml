@@ -71,8 +71,7 @@ function init_menu_object(_name, _inst) {
                     }
                 );
         case "shop_menu_item_window":
-            _inst.view = 1;
-            return new MenuObject(_name, o_scroll_window, _inst, sq_no_animation);
+            return new MenuObject(_name, o_window, _inst, sq_no_animation);
         case "shop_menu_quit":
             return new MenuObject(_name, o_button, _inst, sq_no_animation)
                 .set_update(
@@ -95,13 +94,29 @@ function init_menu_object(_name, _inst) {
                         print(" UPGRADE TOP ");
                     }
                 );
-        
-        // Shop statics
-        case "shop_menu_gem_count":
-        case "shop_menu_graph":
-        case "shop_menu_stats":
+        case "shop_menu_detail_window":
+            _inst.image_alpha = 0;
+            return new MenuObject(_name, o_window, _inst, sq_window_quick_fade)
+                .add_animation(new MenuAnimation("open_detail", 0, 12, 0))
+                .add_animation(new MenuAnimation("close_detail", 12, 12, 0, seqdir_left));
         case "shop_menu_item_stats":
-        case "shop_menu_item_window_source":
+            _inst.track_variable = reference(reference(o_control.items, reference(o_control, "item_focus")), "description");
+            return new MenuObject(_name, o_textbox, _inst, sq_no_animation);
+        case "shop_menu_item_buy":
+            return new MenuObject(_name, o_button, _inst, sq_no_animation)
+                .set_update(
+                    function() {
+                        if (text == "BUY") {
+                           if (o_control.player_stats.gems >= o_control.items[$ o_control.item_focus].cost) {
+                               o_control.player_stats.gems -= o_control.items[$ o_control.item_focus].cost;
+                               o_control.items[$ o_control.item_focus].unlocked = true;
+                               text = "EQUIP";
+                           }
+                        } else {
+                            menu.animate("open_swap_item");
+                        }
+                    }
+                );
         case "shop_menu_item_0":
         case "shop_menu_item_1":
         case "shop_menu_item_2":
@@ -114,6 +129,41 @@ function init_menu_object(_name, _inst) {
         case "shop_menu_item_9":
         case "shop_menu_item_10":
         case "shop_menu_item_11":
-            return new MenuObject(_name, o_textbox, _inst, sq_no_animation);
+             return new MenuObject(_name, o_button, _inst, sq_no_animation)
+                .set_update(
+                    function() {
+                        if (menu.objects[$ "shop_menu_detail_window"].parent.image_alpha > 0) {
+                            menu.animate("close_detail");
+                            call_later(
+                                menu.objects[$ "shop_menu_detail_window"].animations[$ "close_detail"].delay,
+                                gamespeed_fps,
+                                function() {
+                                    o_control.item_focus = "none";
+                                },
+                                false
+                            )
+                        } else {
+                            o_control.item_focus = parent.item_name;
+                            if (o_control.items[$ parent.item_name].unlocked) {
+                                menu.objects[$ "shop_menu_item_buy"].text = "EQUIP";
+                            } else {
+                                menu.objects[$ "shop_menu_item_buy"].text = "BUY";
+                            }
+                            menu.animate("open_detail");
+                        }
+                    }
+                );
+        case "shop_menu_gem_count":
+            _inst.track_variable = reference(o_control.player_stats, "gems");
+             return new MenuObject(_name, o_textbox, _inst, sq_no_animation);
+        // Shop statics
+        case "shop_menu_graph":
+             return new MenuObject(_name, o_graph, _inst, sq_no_animation);
+        case "shop_menu_stats":
+             return new MenuObject(_name, o_textbox, _inst, sq_no_animation);
+        case "shop_menu_item_window_source":
+             return new MenuObject(_name, o_window_source, _inst, sq_no_animation);
+        case "shop_menu_detail_window_source":
+             return new MenuObject(_name, o_window_source, _inst, sq_no_animation);
     }
 }

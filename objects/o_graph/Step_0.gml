@@ -7,13 +7,13 @@ weight = lerp(weight, o_control.player_stats.weight, 0.1);
 cm_height = lerp(cm_height, o_control.player_stats.height, 0.1);
 
 if (hovered) {
-    if (mouse_wheel_up()) {
-        max_width = max(lerp(max_width, max_width * 0.9, 0.5), width);
-        max_height = max(lerp(max_height, max_height * 0.9, 0.5), height);
+    if (mouse_wheel_down()) {
+        max_width = max(lerp(max_width, max_width + 60, 0.5), width);
+        max_height = max(lerp(max_height, max_height + 30, 0.5), height);
     }
     
-    if (mouse_wheel_down()) {
-        max_width = lerp(max_width, max_width * 1.2, 0.5);
-        max_height = lerp(max_height, max_height * 1.2, 0.5);
+    if (mouse_wheel_up()) {
+        max_width = lerp(max_width, max_width - 60, 0.5);
+        max_height = lerp(max_height, max_height - 30, 0.5);
     }
 }

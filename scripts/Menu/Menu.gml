@@ -9,7 +9,7 @@ function Menu(_name) constructor {
     // Object handling
     add_object = function(_obj) {
         if (!is_instanceof(_obj, MenuObject)) {
-            print("Could not add non-Object to menu");
+            print("Could not add non-Object to menu:", _obj);
             return self;
         }
         
@@ -25,6 +25,15 @@ function Menu(_name) constructor {
         }
         
         return self;
+    }
+    
+    // Populate objects
+    populate = function() {
+        with (o_menu_object) {
+            if (!struct_exists(other.objects, name) && string_starts_with(name, other.name)) {
+                other.add_object(init_menu_object(name, self));
+            }
+        }
     }
     
     // Update objects

@@ -9,7 +9,7 @@ display_set_gui_size(WIDTH * 2, HEIGHT * 2);
 gpu_set_texfilter(false);
 randomise();
 
-camera = instance_create_depth(
+game_camera = instance_create_depth(
     WIDTH / 2, HEIGHT / 2, 0,
     o_camera,
     {
@@ -21,7 +21,30 @@ camera = instance_create_depth(
 player_stats = undefined;
 game_state = new StateMachine(self);
 next_room = rm_main;
+
 menus = {};
+item_focus = "none";
+items = {
+    "none": new PassiveItem(
+        "none", sp_secret,
+        "This item doesn't actually exist.",
+        -1000, 1,
+        function() {
+            var player = instance_find(o_player, 0);
+            if (!is_null(top)) {
+                top.timer = 999;
+            }
+        }
+    ),
+    "gyroscope": new ActiveItem(
+        "gyroscope", sp_gyroscope,
+        "Left click moves the top toward the mouse. Uses RPM.",
+        0.5, 5,
+        function() {
+            
+        }
+    )
+};
 
 // Main menu states
 game_state.add_state(
@@ -29,19 +52,14 @@ game_state.add_state(
         .set_function(
             "enter",
             function() {
-                camera.x = WIDTH / 2;
-                camera.y = HEIGHT / 2;
+                game_camera.x = WIDTH / 2;
+                game_camera.y = HEIGHT / 2;
                 
                 // Load?
                 if (is_null(player_stats)) player_stats = new Statistics();
                 
                 if (!struct_exists(menus, "main_menu")) {
-                    var menu = new Menu("main_menu");
-                    with (o_menu_object) {
-                        if (!struct_exists(menu.objects, name) && string_starts_with(name, menu.name)) {
-                            menu.add_object(init_menu_object(name, self));
-                        }
-                    }
+                    new Menu("main_menu").populate();
                 }
                 
                 menus[$ "main_menu"].activate();
@@ -76,16 +94,11 @@ game_state.add_state(
         .set_function(
             "enter",
             function() {
-                camera.x = WIDTH / 2;
-                camera.y = HEIGHT / 2;
+                game_camera.x = WIDTH / 2;
+                game_camera.y = HEIGHT / 2;
                 
                 if (!struct_exists(menus, "shop_menu")) {
-                    var menu = new Menu("shop_menu");
-                    with (o_menu_object) {
-                        if (!struct_exists(menu.objects, name) && string_starts_with(name, menu.name)) {
-                            menu.add_object(init_menu_object(name, self));
-                        }
-                    }
+                    new Menu("shop_menu").populate();
                 }
                 
                 menus[$ "shop_menu"].activate();
@@ -111,8 +124,8 @@ game_state.add_state(
         .set_function(
             "enter",
             function() {
-                camera.x = o_start.x;
-                camera.y = o_start.y;
+                game_camera.x = o_start.x;
+                game_camera.y = o_start.y;
             }
         )
         .set_function(
@@ -126,7 +139,7 @@ game_state.add_state(
             "leave",
             function() {
                 // Create player
-                camera.follow = instance_create_depth(
+                game_camera.follow = instance_create_depth(
                     o_start.x, o_start.y, 0,
                     o_player, {
                         rpm: 450,
@@ -148,7 +161,7 @@ game_state.add_state(
         ).set_function(
             "leave",
             function() {
-                camera.follow = undefined;
+                game_camera.follow = undefined;
                 room_goto(next_room);
             }
         )

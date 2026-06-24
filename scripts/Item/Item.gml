@@ -1,15 +1,17 @@
-function Item(_name, _description, _weight) constructor {
-    id = Inventory.item_id++;
+function Item(_name, _sprite, _description, _weight, _cost = 100) constructor {
     name = _name;
+    sprite = _sprite;
     description = _description;
     weight = _weight;
-    level = 1;
+    cost = _cost;
+    unlocked = false;
+    equiped = false;
 }
 
-function PassiveItem(_name, _description, _weight, _ability) : Item(_name, _description, _weight) constructor {
+function PassiveItem(_name, _sprite, _description, _weight, _cost, _ability) : Item(_name,  _sprite, _description, _weight, _cost = 100) constructor {
     ability = _ability;
 }
 
-function ActiveItem(_name, _description, _weight, _ability) : Item(_name, _description, _weight) constructor {
+function ActiveItem(_name, _sprite, _description, _weight, _cost, _ability) : Item(_name,  _sprite, _description, _weight, _cost = 100) constructor {
     ability = _ability;
 }
