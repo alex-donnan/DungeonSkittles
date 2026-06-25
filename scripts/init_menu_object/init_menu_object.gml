@@ -65,7 +65,6 @@ function init_menu_object(_name, _inst) {
             return new MenuObject(_name, o_button, _inst, sq_no_animation)
                 .set_update(
                     function() {
-                        print("GO NEXT");
                         o_control.game_state.set_state("dungeon_start", "next");
                         o_control.next_room = rm_dungeon;
                     }
@@ -106,11 +105,11 @@ function init_menu_object(_name, _inst) {
             return new MenuObject(_name, o_button, _inst, sq_no_animation)
                 .set_update(
                     function() {
-                        if (text == "BUY") {
+                        if (parent.text == "BUY") {
                            if (o_control.player_stats.gems >= o_control.items[$ o_control.item_focus].cost) {
                                o_control.player_stats.gems -= o_control.items[$ o_control.item_focus].cost;
                                o_control.items[$ o_control.item_focus].unlocked = true;
-                               text = "EQUIP";
+                               parent.text = "EQUIP";
                            }
                         } else {
                             menu.animate("open_swap_item");
@@ -129,27 +128,34 @@ function init_menu_object(_name, _inst) {
         case "shop_menu_item_9":
         case "shop_menu_item_10":
         case "shop_menu_item_11":
+            var sprite = asset_get_index($"sp_{string_trim(_inst.item_name)}");
+            print($"sp_{_inst.item_name}", sprite);
+            if (!is_null(sprite) && sprite != -1) {
+                _inst.sprite_index = sprite;
+            }
              return new MenuObject(_name, o_button, _inst, sq_no_animation)
                 .set_update(
                     function() {
-                        if (menu.objects[$ "shop_menu_detail_window"].parent.image_alpha > 0) {
+                        var detail_obj = menu.objects[$ "shop_menu_detail_window"].parent;
+                        if (detail_obj.image_alpha > 0) {
                             menu.animate("close_detail");
-                            call_later(
-                                menu.objects[$ "shop_menu_detail_window"].animations[$ "close_detail"].delay,
-                                gamespeed_fps,
-                                function() {
-                                    o_control.item_focus = "none";
-                                },
-                                false
-                            )
+                            instance_deactivate_region(
+                                detail_obj.window_camera.x - detail_obj.width / 2, detail_obj.window_camera.y - detail_obj.height / 2,
+                                detail_obj.width, detail_obj.height,
+                                true,
+                                true
+                            );
+                            o_control.item_focus = "none";
                         } else {
-                            o_control.item_focus = parent.item_name;
-                            if (o_control.items[$ parent.item_name].unlocked) {
-                                menu.objects[$ "shop_menu_item_buy"].text = "EQUIP";
-                            } else {
-                                menu.objects[$ "shop_menu_item_buy"].text = "BUY";
-                            }
                             menu.animate("open_detail");
+                            instance_activate_region(
+                                detail_obj.window_camera.x - detail_obj.width / 2, detail_obj.window_camera.y - detail_obj.height / 2,
+                                detail_obj.width, detail_obj.height,
+                                true
+                            );
+                            o_control.item_focus = parent.item_name;
+                            menu.objects[$ "shop_menu_item_buy"].parent.text = (o_control.items[$ parent.item_name].unlocked) ?
+                                 "EQUIP" : "BUY";
                         }
                     }
                 );

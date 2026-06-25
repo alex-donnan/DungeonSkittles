@@ -10,6 +10,7 @@ function Item(_name, _sprite, _description, _weight, _cost = 100) constructor {
 
 function PassiveItem(_name, _sprite, _description, _weight, _cost, _ability) : Item(_name,  _sprite, _description, _weight, _cost = 100) constructor {
     ability = _ability;
+    timer = 0;
 }
 
 function ActiveItem(_name, _sprite, _description, _weight, _cost, _ability) : Item(_name,  _sprite, _description, _weight, _cost = 100) constructor {

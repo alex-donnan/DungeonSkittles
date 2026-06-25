@@ -1,1 +1,0 @@
-draw_sprite_ext(sprite_index, image_index, floor(x), floor(y), 1, 1, image_direction, c_white, 1);

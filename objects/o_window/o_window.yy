@@ -33,6 +33,7 @@
   "properties":[
     {"$GMObjectProperty":"v2","%Name":"name","filters":[],"listItems":[],"multiselect":false,"name":"name","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"default","varType":2,},
     {"$GMObjectProperty":"v2","%Name":"view","filters":[],"listItems":[],"multiselect":false,"name":"view","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"0","varType":1,},
+    {"$GMObjectProperty":"v2","%Name":"scroll_dist","filters":[],"listItems":[],"multiselect":false,"name":"scroll_dist","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"48","varType":0,},
   ],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
