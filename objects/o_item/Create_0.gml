@@ -1,5 +1,5 @@
 hovered = false;
 active = true;
 update = false;
-width = bbox_right - bbox_left;
-height = bbox_bottom - bbox_top;
+width = sprite_get_width(sprite_index) * image_xscale;
+height = sprite_get_height(sprite_index) * image_yscale;

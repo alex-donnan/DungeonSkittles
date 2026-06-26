@@ -1,4 +1,4 @@
-function MenuObject(_name, _type, _inst, _sequence) constructor {
+function MenuObject(_name, _type, _inst, _sequence, _ignore_animating = false) constructor {
     name = _name;
     type = _type;
     parent = _inst;
@@ -9,7 +9,9 @@ function MenuObject(_name, _type, _inst, _sequence) constructor {
     layer_sequence_instance = undefined;
      
     animations = {};
+    last_animation = undefined;
     animating = false;
+    ignore_animating = _ignore_animating;
     
     // Animation handling
     add_animation = function(_anim) {
@@ -33,7 +35,8 @@ function MenuObject(_name, _type, _inst, _sequence) constructor {
     
     play_animation = function(_anim_name) {
         var anim = animations[$ _anim_name];
-        if (!is_null(anim) && !animating) {
+        if (!is_null(anim) && (!animating || ignore_animating)) {
+            last_animation = _anim_name;
             sequence_instance_override_object(layer_sequence_instance, type, parent);
             layer_sequence_headpos(layer_sequence, anim.in);
             layer_sequence_headdir(layer_sequence, anim.dir);

@@ -44,8 +44,8 @@
   },
   "origin":0,
   "parent":{
-    "name":"menu_objects",
-    "path":"folders/Structs/Menus/menu_objects.yy",
+    "name":"menu_graphics",
+    "path":"folders/Structs/Menus/menu_graphics.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

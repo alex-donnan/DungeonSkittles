@@ -96,26 +96,36 @@ function init_menu_object(_name, _inst) {
         case "shop_menu_detail_window":
             _inst.image_alpha = 0;
             return new MenuObject(_name, o_window, _inst, sq_window_quick_fade)
-                .add_animation(new MenuAnimation("open_detail", 0, 12, 0))
-                .add_animation(new MenuAnimation("close_detail", 12, 12, 0, seqdir_left));
+                .add_animation(new MenuAnimation("open_detail", 0, 6, 0))
+                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left));
         case "shop_menu_item_stats":
-            _inst.track_variable = reference(reference(o_control.items, reference(o_control, "item_focus")), "description");
-            return new MenuObject(_name, o_textbox, _inst, sq_no_animation);
+            return new MenuObject(_name, o_textbox, _inst, sq_textbox_quick_fade)
+                .add_animation(new MenuAnimation("open_detail", 0, 6, 0))
+                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left));
         case "shop_menu_item_buy":
-            return new MenuObject(_name, o_button, _inst, sq_no_animation)
+            return new MenuObject(_name, o_button, _inst, sq_button_quick_fade)
+                .add_animation(new MenuAnimation("open_detail", 0, 6, 0))
+                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left))
                 .set_update(
                     function() {
-                        if (parent.text == "BUY") {
-                           if (o_control.player_stats.gems >= o_control.items[$ o_control.item_focus].cost) {
-                               o_control.player_stats.gems -= o_control.items[$ o_control.item_focus].cost;
-                               o_control.items[$ o_control.item_focus].unlocked = true;
-                               parent.text = "EQUIP";
-                           }
+                        if (!o_control.items[$ o_control.item_focus].unlocked) {
+                            if (o_control.player_stats.gems >= o_control.items[$ o_control.item_focus].cost) {
+                                o_control.player_stats.gems -= o_control.items[$ o_control.item_focus].cost;
+                                o_control.items[$ o_control.item_focus].unlocked = true;
+                                parent.text = "EQUIP";
+                            } else {
+                                menu.animate("gem_wiggle");
+                            }
                         } else {
                             menu.animate("open_swap_item");
                         }
                     }
                 );
+        case "shop_menu_equipped_item_0":
+        case "shop_menu_equipped_item_1":
+        case "shop_menu_equipped_item_2":
+        case "shop_menu_equipped_item_3":
+            return new MenuObject(_name, o_button, _inst, sq_no_animation);
         case "shop_menu_item_0":
         case "shop_menu_item_1":
         case "shop_menu_item_2":
@@ -129,39 +139,40 @@ function init_menu_object(_name, _inst) {
         case "shop_menu_item_10":
         case "shop_menu_item_11":
             var sprite = asset_get_index($"sp_{string_trim(_inst.item_name)}");
-            print($"sp_{_inst.item_name}", sprite);
             if (!is_null(sprite) && sprite != -1) {
                 _inst.sprite_index = sprite;
             }
              return new MenuObject(_name, o_button, _inst, sq_no_animation)
                 .set_update(
                     function() {
-                        var detail_obj = menu.objects[$ "shop_menu_detail_window"].parent;
-                        if (detail_obj.image_alpha > 0) {
+                        var detail = menu.objects[$ "shop_menu_detail_window"];
+                        if (detail.last_animation == "open_detail" && o_control.item_focus == parent.item_name) {
                             menu.animate("close_detail");
                             instance_deactivate_region(
-                                detail_obj.window_camera.x - detail_obj.width / 2, detail_obj.window_camera.y - detail_obj.height / 2,
-                                detail_obj.width, detail_obj.height,
+                                detail.parent.window_camera.x - detail.parent.width / 2, detail.parent.window_camera.y - detail.parent.height / 2,
+                                detail.parent.width, detail.parent.height,
                                 true,
                                 true
                             );
                             o_control.item_focus = "none";
                         } else {
-                            menu.animate("open_detail");
-                            instance_activate_region(
-                                detail_obj.window_camera.x - detail_obj.width / 2, detail_obj.window_camera.y - detail_obj.height / 2,
-                                detail_obj.width, detail_obj.height,
-                                true
-                            );
+                            if (detail.last_animation == "close_detail" || is_undefined(detail.last_animation)) {
+                                menu.animate("open_detail");
+                                instance_activate_region(
+                                    detail.parent.window_camera.x - detail.parent.width / 2, detail.parent.window_camera.y - detail.parent.height / 2,
+                                    detail.parent.width, detail.parent.height,
+                                    true
+                                );
+                            }
                             o_control.item_focus = parent.item_name;
                             menu.objects[$ "shop_menu_item_buy"].parent.text = (o_control.items[$ parent.item_name].unlocked) ?
-                                 "EQUIP" : "BUY";
+                                "EQUIP" : "BUY";
                         }
                     }
                 );
         case "shop_menu_gem_count":
-            _inst.track_variable = reference(o_control.player_stats, "gems");
-             return new MenuObject(_name, o_textbox, _inst, sq_no_animation);
+             return new MenuObject(_name, o_textbox, _inst, sq_textbox_wiggle, true)
+                .add_animation(new MenuAnimation("gem_wiggle", 0, 20, 0));
         // Shop statics
         case "shop_menu_graph":
              return new MenuObject(_name, o_graph, _inst, sq_no_animation);
