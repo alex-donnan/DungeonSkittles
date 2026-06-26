@@ -70,6 +70,7 @@ gem_state.add_state(
                 move_speed *= 1.05;
                 
                 if (place_meeting(x, y, o_player)) {
+                    o_control.player_stats.gems += 1;
                     instance_destroy(self);
                 }
             }

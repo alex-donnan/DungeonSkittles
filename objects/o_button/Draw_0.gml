@@ -1,3 +1,4 @@
 if (!active) exit;
     
-draw_sprite_ext(sprite_index, 0, x, y, image_xscale, image_yscale, 0, c_white, (hovered) ? 0.5 : 1);
+update = (hovered && mouse_check_button_released(mb_left));
+draw_sprite_stretched_ext(sprite_index, 0, x, y, width, height, c_white, image_alpha * ((hovered) ? 0.5 : 1));

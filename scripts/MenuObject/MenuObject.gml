@@ -33,29 +33,51 @@ function MenuObject(_name, _type, _inst, _sequence, _ignore_animating = false) c
         return self;
     }
     
+    start_animation = function() {
+        print("started animation");
+        animating = true;
+        layer_sequence_play(layer_sequence);
+    }
+    
+    stop_animation = function() {
+        print("stopped animation");
+        animating = false;
+        layer_sequence_pause(layer_sequence);
+    }
+    
     play_animation = function(_anim_name) {
         var anim = animations[$ _anim_name];
-        if (!is_null(anim) && (!animating || ignore_animating)) {
+        if (
+            !is_null(anim) &&
+            (!animating || ignore_animating) &&
+            (len(anim.previous_anim) == 0 || array_contains(anim.previous_anim, last_animation))
+        ) {
             last_animation = _anim_name;
             sequence_instance_override_object(layer_sequence_instance, type, parent);
             layer_sequence_headpos(layer_sequence, anim.in);
             layer_sequence_headdir(layer_sequence, anim.dir);
-            call_later(
-                anim.delay,
-                time_source_units_frames,
-                function() {
-                    animating = true;
-                    layer_sequence_play(layer_sequence);
-                },
-                false
-            );
-            call_later(
-                anim.delay + anim.length,
-                time_source_units_frames,
-                function() {
-                    animating = false;
-                }
-            );
+            
+            if (anim.delay > 0) {
+                call_later(
+                    anim.delay,
+                    time_source_units_frames,
+                    start_animation,
+                    false
+                );
+            } else {
+                start_animation();
+            }
+            
+            if (anim.delay + anim.length > 0) {
+                call_later(
+                    anim.delay + anim.length + 1,
+                    time_source_units_frames,
+                    stop_animation,
+                    false
+                );
+            } else {
+                stop_animation();
+            }
         }
     }
     
@@ -72,7 +94,7 @@ function MenuObject(_name, _type, _inst, _sequence, _ignore_animating = false) c
     }
     
     set_update = function(_function) {
-        if (!is_callable(_function)) {
+        if (!is_method(_function)) {
             print("Could not set non-callable to update function")
             return self;
         }

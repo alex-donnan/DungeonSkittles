@@ -1,7 +1,7 @@
 #macro WIDTH 480
 #macro HEIGHT 270
 
-show_debug_overlay(true);
+show_debug_overlay(false);
 
 window_set_size(WIDTH * 2, HEIGHT * 2);
 window_center();
@@ -81,15 +81,8 @@ game_state.add_state(
                     new Menu("shop_menu").populate();
                 }
                 
-                var detail_obj = menus[$ "shop_menu"].objects[$ "shop_menu_detail_window"].parent;
-                detail_obj.image_alpha = 0;
-                instance_deactivate_region(
-                    detail_obj.window_camera.x - detail_obj.width / 2, detail_obj.window_camera.y - detail_obj.height / 2,
-                    detail_obj.width, detail_obj.height,
-                    true,
-                    true
-                );
                 menus[$ "shop_menu"].activate();
+                menus[$ "shop_menu"].animate("fast_close");
             }
         )
         .set_function(
@@ -100,13 +93,6 @@ game_state.add_state(
         ).set_function(
             "leave",
             function() {
-                var detail_obj = menus[$ "shop_menu"].objects[$ "shop_menu_detail_window"].parent;
-                detail_obj.image_alpha = 0;
-                instance_activate_region(
-                    detail_obj.window_camera.x - detail_obj.width / 2, detail_obj.window_camera.y - detail_obj.height / 2,
-                    detail_obj.width, detail_obj.height,
-                    true
-                );
                 menus[$ "shop_menu"].deactivate();
                 room_goto(next_room);
             }

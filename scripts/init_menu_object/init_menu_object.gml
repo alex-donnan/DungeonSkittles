@@ -69,8 +69,6 @@ function init_menu_object(_name, _inst) {
                         o_control.next_room = rm_dungeon;
                     }
                 );
-        case "shop_menu_item_window":
-            return new MenuObject(_name, o_window, _inst, sq_no_animation);
         case "shop_menu_quit":
             return new MenuObject(_name, o_button, _inst, sq_no_animation)
                 .set_update(
@@ -95,19 +93,24 @@ function init_menu_object(_name, _inst) {
                 );
         case "shop_menu_detail_window":
             _inst.image_alpha = 0;
-            return new MenuObject(_name, o_window, _inst, sq_window_quick_fade)
-                .add_animation(new MenuAnimation("open_detail", 0, 6, 0))
-                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left));
-        case "shop_menu_item_stats":
-            return new MenuObject(_name, o_textbox, _inst, sq_textbox_quick_fade)
-                .add_animation(new MenuAnimation("open_detail", 0, 6, 0))
-                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left));
-        case "shop_menu_item_buy":
-            return new MenuObject(_name, o_button, _inst, sq_button_quick_fade)
-                .add_animation(new MenuAnimation("open_detail", 0, 6, 0))
-                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left))
+            return new MenuObject(_name, o_window, _inst, sq_window_quick_fade, true)
+                .add_animation(new MenuAnimation("open_detail", 0, 6, 0, seqdir_right, ["fast_close", "close_detail"]))
+                .add_animation(new MenuAnimation("fast_close", 1, 1, 0, seqdir_left))
+                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left, ["open_detail"]));
+        case "shop_menu_detail_stats":
+            return new MenuObject(_name, o_textbox, _inst, sq_textbox_quick_fade, true)
+                .add_animation(new MenuAnimation("open_detail", 0, 6, 0, seqdir_right, ["fast_close", "close_detail"]))
+                .add_animation(new MenuAnimation("fast_close", 1, 1, 0, seqdir_left))
+                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left, ["open_detail"]));
+        case "shop_menu_detail_buy":
+            return new MenuObject(_name, o_button, _inst, sq_button_quick_fade, true)
+                .add_animation(new MenuAnimation("open_detail", 0, 6, 0, seqdir_right, ["fast_close", "close_detail"]))
+                .add_animation(new MenuAnimation("fast_close", 1, 1, 0, seqdir_left))
+                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left, ["open_detail"]))
                 .set_update(
                     function() {
+                        if (array_contains(["fast_close", "close_detail"], last_animation)) return;
+                            
                         if (!o_control.items[$ o_control.item_focus].unlocked) {
                             if (o_control.player_stats.gems >= o_control.items[$ o_control.item_focus].cost) {
                                 o_control.player_stats.gems -= o_control.items[$ o_control.item_focus].cost;
@@ -117,10 +120,42 @@ function init_menu_object(_name, _inst) {
                                 menu.animate("gem_wiggle");
                             }
                         } else {
-                            menu.animate("open_swap_item");
+                            menu.animate("open_equip");
                         }
                     }
                 );
+        case "shop_menu_detail_close":
+            return new MenuObject(_name, o_button, _inst, sq_button_quick_fade, true)
+                .add_animation(new MenuAnimation("open_detail", 0, 6, 0, seqdir_right, ["fast_close", "close_detail"]))
+                .add_animation(new MenuAnimation("fast_close", 1, 1, 0, seqdir_left))
+                .add_animation(new MenuAnimation("close_detail", 6, 6, 0, seqdir_left, ["open_detail"]))
+                .set_update(
+                    function() {
+                        if (array_contains(["fast_close", "close_detail"], last_animation)) return;
+                        menu.animate("close_detail");
+                        menu.animate("close_equip");
+                    }
+                );
+        case "shop_menu_equip_0":
+            return new MenuObject(_name, o_flexbox, _inst, sq_flexbox_quick_fade)
+                .add_animation(new MenuAnimation("open_equip", 0, 6, 0, seqdir_right, ["fast_close", "close_equip"]))
+                .add_animation(new MenuAnimation("fast_close", 1, 1, 0, seqdir_left))
+                .add_animation(new MenuAnimation("close_equip", 6, 6, 0, seqdir_left, ["open_equip"]));
+        case "shop_menu_equip_1":
+            return new MenuObject(_name, o_flexbox, _inst, sq_flexbox_quick_fade)
+                .add_animation(new MenuAnimation("open_equip", 0, 6, 6, seqdir_right, ["fast_close", "close_equip"]))
+                .add_animation(new MenuAnimation("fast_close", 1, 1, 0, seqdir_left))
+                .add_animation(new MenuAnimation("close_equip", 6, 6, 0, seqdir_left, ["open_equip"]));
+        case "shop_menu_equip_2":
+            return new MenuObject(_name, o_flexbox, _inst, sq_flexbox_quick_fade)
+                .add_animation(new MenuAnimation("open_equip", 0, 6, 12, seqdir_right, ["fast_close", "close_equip"]))
+                .add_animation(new MenuAnimation("fast_close", 1, 1, 0, seqdir_left))
+                .add_animation(new MenuAnimation("close_equip", 6, 6, 0, seqdir_left, ["open_equip"]));
+        case "shop_menu_equip_3":
+            return new MenuObject(_name, o_flexbox, _inst, sq_flexbox_quick_fade)
+                .add_animation(new MenuAnimation("open_equip", 0, 6, 18, seqdir_right, ["fast_close", "close_equip"]))
+                .add_animation(new MenuAnimation("fast_close", 1, 1, 0, seqdir_left))
+                .add_animation(new MenuAnimation("close_equip", 6, 6, 0, seqdir_left, ["open_equip"]));
         case "shop_menu_equipped_item_0":
         case "shop_menu_equipped_item_1":
         case "shop_menu_equipped_item_2":
@@ -139,33 +174,21 @@ function init_menu_object(_name, _inst) {
         case "shop_menu_item_10":
         case "shop_menu_item_11":
             var sprite = asset_get_index($"sp_{string_trim(_inst.item_name)}");
-            if (!is_null(sprite) && sprite != -1) {
-                _inst.sprite_index = sprite;
-            }
-             return new MenuObject(_name, o_button, _inst, sq_no_animation)
+            if (!is_null(sprite) && sprite != -1) _inst.sprite_index = sprite;
+            
+            return new MenuObject(_name, o_button, _inst, sq_no_animation)
                 .set_update(
                     function() {
                         var detail = menu.objects[$ "shop_menu_detail_window"];
                         if (detail.last_animation == "open_detail" && o_control.item_focus == parent.item_name) {
                             menu.animate("close_detail");
-                            instance_deactivate_region(
-                                detail.parent.window_camera.x - detail.parent.width / 2, detail.parent.window_camera.y - detail.parent.height / 2,
-                                detail.parent.width, detail.parent.height,
-                                true,
-                                true
-                            );
                             o_control.item_focus = "none";
                         } else {
-                            if (detail.last_animation == "close_detail" || is_undefined(detail.last_animation)) {
+                            if (array_contains(["fast_close", "close_detail", undefined], detail.last_animation)) {
                                 menu.animate("open_detail");
-                                instance_activate_region(
-                                    detail.parent.window_camera.x - detail.parent.width / 2, detail.parent.window_camera.y - detail.parent.height / 2,
-                                    detail.parent.width, detail.parent.height,
-                                    true
-                                );
                             }
                             o_control.item_focus = parent.item_name;
-                            menu.objects[$ "shop_menu_item_buy"].parent.text = (o_control.items[$ parent.item_name].unlocked) ?
+                            menu.objects[$ "shop_menu_detail_buy"].parent.text = (o_control.items[$ parent.item_name].unlocked) ?
                                 "EQUIP" : "BUY";
                         }
                     }
@@ -178,6 +201,8 @@ function init_menu_object(_name, _inst) {
              return new MenuObject(_name, o_graph, _inst, sq_no_animation);
         case "shop_menu_stats":
              return new MenuObject(_name, o_textbox, _inst, sq_no_animation);
+        case "shop_menu_item_window":
+            return new MenuObject(_name, o_window, _inst, sq_no_animation);
         case "shop_menu_item_window_source":
              return new MenuObject(_name, o_window_source, _inst, sq_no_animation);
         case "shop_menu_detail_window_source":

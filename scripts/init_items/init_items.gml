@@ -20,7 +20,7 @@ function init_items() {
                     var player = instance_find(o_player, 0);
                     if (!is_null(player)) {
                         player.tilt_direction = point_direction(player.x, player.y, mouse_x, mouse_y);
-                        player.timer += 5;
+                        player.timer += 0.5;
                     }
                 }
             }

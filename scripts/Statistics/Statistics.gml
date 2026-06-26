@@ -9,7 +9,7 @@ function Statistics() constructor {
     radius = 2;
     move_influence = 1.2;
     move_speed = 2;
-    gems = 1;
+    gems = 100;
     
     // Random stats
     play_time = 0;
