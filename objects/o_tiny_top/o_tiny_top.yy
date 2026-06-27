@@ -14,7 +14,7 @@
   "overriddenProperties":[],
   "parent":{
     "name":"Player",
-    "path":"folders/Player.yy",
+    "path":"folders/Solids/Player.yy",
   },
   "parentObjectId":{
     "name":"o_player",

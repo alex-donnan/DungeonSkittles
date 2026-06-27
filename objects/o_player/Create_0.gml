@@ -10,6 +10,9 @@ unstable_rpm = 2 * sqrt(9.81 * (0.001 + power(height, 2)) * height) / amiu;
 minimum_rpm = max(15, unstable_rpm / 3);
 
 // Other vars
+damage = 1;
+bonus_damage = 0;
+
 crashed = false;
 image_direction = 0;
 mouse_direction = point_direction(x, y, mouse_x, mouse_y);

@@ -2,7 +2,7 @@
   "$GMSprite":"v2",
   "%Name":"sp_tile_dungeon",
   "bboxMode":0,
-  "bbox_bottom":47,
+  "bbox_bottom":127,
   "bbox_left":0,
   "bbox_right":127,
   "bbox_top":0,
@@ -14,8 +14,8 @@
   "frames":[
     {"$GMSpriteFrame":"v1","%Name":"71448fc9-6d13-4d24-9da9-d25fb54b44df","name":"71448fc9-6d13-4d24-9da9-d25fb54b44df","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
-  "gridX":8,
-  "gridY":8,
+  "gridX":16,
+  "gridY":16,
   "height":128,
   "HTile":false,
   "layers":[

@@ -63,7 +63,12 @@ function Menu(_name) constructor {
             objects,
             function(_name, _obj) {
                  with (_obj) {
-                    parent.active = true; 
+                    parent.active = true;
+                    
+                    if (_obj.parent.object_index == o_window) {
+                        _obj.parent.window_camera.active =  true;
+                    }
+                    
                     layer_sequence = layer_sequence_create("GUI", parent.x, parent.y, sequence);
                     layer_sequence_instance = layer_sequence_get_instance(layer_sequence);
                     layer_sequence_pause(layer_sequence);
@@ -78,6 +83,14 @@ function Menu(_name) constructor {
             objects,
             function(_name, _obj) {
                 _obj.parent.active = false;
+                    
+                if (_obj.parent.object_index == o_window) {
+                    if (!is_null(_obj.parent.window_camera)) {
+                        camera_destroy(_obj.parent.window_camera.camera);
+                        _obj.parent.window_camera.active = false;
+                    }
+                }
+                
                 _obj.cleanup();
             }
         )

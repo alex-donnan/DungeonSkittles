@@ -32,7 +32,7 @@ function init_items() {
         ),
         "rubber_wheel": new PassiveItem(
             "rubber_wheel", "Rubber Wheel", sp_rubber_wheel,
-            "The top is bouncier on contact. Reduces bounce penalty.",
+            "Reduces bounce penalty to RPM.",
             1.5, 15,
             function() {
                 var player = instance_find(o_player, 0);
@@ -74,12 +74,12 @@ function init_items() {
                 }
             }
         ),
-        "firecracker": new ActiveItem(
+        "firecracker": new PassiveItem(
             "firecracker", "Firecracker", sp_firecracker,
-            "Right click fires a single use per run rocket that returns the top to starting RPM.",
+            "The first time your top would crash returns the top to starting RPM.",
             1, 50,
             function() {
-                if (mouse_check_button(mb_right) && timer == 0) {
+                if (player.crashed && timer == 0) {
                     var player = instance_find(o_player, 0);
                     if (!is_null(player)) {
                         player.timer = 0;   
@@ -112,10 +112,17 @@ function init_items() {
         ),
         "gem_cutter": new PassiveItem(
             "gem_cutter", "Gem Cutter", sp_gem_cutter,
-            "Increases the value of gems collected based on RPM (up to 5)",
+            "Increases the value of gems collected based on RPM. (Up to 5)",
             2, 150,
             function() {
-                
+                var player = instance_find(o_player, 0);
+                if (!is_null(player)) {
+                    var new_value = min(ceil(player.rpm / 1000), 5);
+                    
+                    with (o_gem) {
+                        value = new_value;
+                    }
+                }
             }
         ),
         "tesla_coil": new PassiveItem(
@@ -181,7 +188,68 @@ function init_items() {
             "While unstable, draws the top toward interesting objects.",
             0.1, 500,
             function() {
-                
+                var player = instance_find(o_player, 0);
+                if (!is_null(player) && player.timer_unstable > 0) {
+                    var near_gem = instance_nearest(player.x, player.y, o_gem);
+                    var near_enemy = instance_nearest(player.x, player.y, o_enemy);
+                    var near_artifact = instance_nearest(player.x, player.y, o_artifact);
+                    
+                    if (
+                        !is_null(near_artifact) &&
+                        point_distance(
+                            player.x, player.y,
+                            near_artifact.x, near_artifact.y
+                        ) < 128 &&
+                        collision_line(
+                            player.x ,player.y,
+                            near_artifact.x, near_artifact.y,
+                            o_wall,
+                            false,
+                            true
+                        ) < 0
+                    ) {
+                        player.tilt_direction = point_direction(
+                            player.x, player.y,
+                            near_artifact.x, near_artifact.y
+                        );
+                    } else if (
+                        !is_null(near_enemy) &&
+                        point_distance(
+                            player.x, player.y,
+                            near_enemy.x, near_enemy.y
+                        ) < 96 &&
+                        collision_line(
+                            player.x ,player.y,
+                            near_enemy.x, near_enemy.y,
+                            o_wall,
+                            false,
+                            true
+                        ) < 0
+                    ) {
+                        player.tilt_direction = point_direction(
+                            player.x, player.y,
+                            near_enemy.x, near_enemy.y
+                        );
+                    } else if (
+                        !is_null(near_gem) &&
+                        point_distance(
+                            player.x, player.y,
+                            near_gem.x, near_gem.y
+                        ) < 64 &&
+                        collision_line(
+                            player.x ,player.y,
+                            near_gem.x, near_gem.y,
+                            o_wall,
+                            false,
+                            true
+                        ) < 0
+                    ) {
+                        player.tilt_direction = point_direction(
+                            player.x, player.y,
+                            near_gem.x, near_gem.y
+                        );
+                    }
+                }
             }
         ),
         "unstable_flywheel": new PassiveItem(
@@ -189,15 +257,27 @@ function init_items() {
             "While unstable, has a chance to boost RPM a small amount.",
             0.23, 500,
             function() {
-                
+                var player = instance_find(o_player, 0);
+                if (!is_null(player) && player.timer_unstable > 0) {
+                    if (random(1) < 0.1) {
+                        timer *= 0.95;
+                    }
+                }
             }
         ),
         "unstable_sawblade": new PassiveItem(
             "unstable_sawblade", "Unstable Sawblade", sp_unstable_sawblade,
-            "Deals bonus damage based on time spent unstable.",
+            "Deals bonus damage based on time spent unstable. (Up to 5)",
             0.3, 500,
             function() {
-                
+                var player = instance_find(o_player, 0);
+                if (!is_null(player)) {
+                    if (player.timer_unstable > 0) {
+                        player.bonus_damage = min(player.timer_unstable div (2 * game_get_speed(gamespeed_fps)), 5);
+                    } else {
+                        player.bonus_damage = 0;
+                    }
+                }
             }
         )
     };

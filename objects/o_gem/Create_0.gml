@@ -1,4 +1,5 @@
 timer = irandom(360);
+value = 1;
 wait_timer = 0;
 draw_y = 0;
 draw_scale = 1;
@@ -70,7 +71,7 @@ gem_state.add_state(
                 move_speed *= 1.05;
                 
                 if (place_meeting(x, y, o_player)) {
-                    o_control.player_stats.gems += 1;
+                    o_control.player_stats.gems += value;
                     instance_destroy(self);
                 }
             }

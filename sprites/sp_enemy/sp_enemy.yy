@@ -26,7 +26,7 @@
   "origin":7,
   "parent":{
     "name":"Enemy",
-    "path":"folders/Enemy.yy",
+    "path":"folders/Solids/Enemy.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

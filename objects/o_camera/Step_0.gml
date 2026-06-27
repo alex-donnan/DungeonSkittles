@@ -1,3 +1,5 @@
+if (!active) exit;
+
 camera = view_get_camera(view);
 
 var next_x = x;

@@ -50,7 +50,7 @@
   "origin":7,
   "parent":{
     "name":"Player",
-    "path":"folders/Player.yy",
+    "path":"folders/Solids/Player.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

@@ -44,8 +44,8 @@
   },
   "origin":9,
   "parent":{
-    "name":"Solids",
-    "path":"folders/Solids.yy",
+    "name":"Wall",
+    "path":"folders/Solids/Wall.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

@@ -18,6 +18,8 @@ game_camera = instance_create_depth(
         view: 0
     }
 );
+dungeon_camera = undefined;
+
 player_stats = undefined;
 game_state = new StateMachine(self);
 next_room = rm_main;
@@ -126,7 +128,6 @@ game_state.add_state(
             "leave",
             function() {
                 player_stats.save();
-                
                 menus[$ "shop_menu"].deactivate();
                 room_goto(next_room);
             }
@@ -141,6 +142,22 @@ game_state.add_state(
             function() {
                 game_camera.x = o_start.x;
                 game_camera.y = o_start.y;
+                
+                if (is_null(dungeon_camera)) {
+                    dungeon_camera = instance_create_depth(
+                        WIDTH / 2, HEIGHT / 2, 0,
+                        o_camera,
+                        { view: 1 }
+                    );
+                }
+                
+                //Remove found artifacts
+                with (o_artifact) {
+                    var item = o_control.items[$ item_name];
+                    if (!is_null(item) && item.discovered) {
+                        instance_destroy(self);
+                    }
+                }
                 
                 // DUNGEON MENU
                 if (!struct_exists(menus, "dungeon_menu")) {
@@ -198,6 +215,7 @@ game_state.add_state(
             "leave",
             function() {
                 menus[$ "dungeon_menu"].deactivate();
+                camera_destroy(dungeon_camera.camera);
                 game_camera.follow = undefined;
                 room_goto(next_room);
             }

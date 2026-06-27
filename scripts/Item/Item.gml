@@ -8,7 +8,7 @@ function Item(_id, _name, _sprite, _description, _weight, _cost) constructor {
     weight = _weight;
     cost = _cost;
     unlocked = false;
-    discovered = true;
+    discovered = false;
     discovered_condition = undefined;
 }
 

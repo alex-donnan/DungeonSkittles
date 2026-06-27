@@ -267,5 +267,10 @@ Regrettably unfinished, but that's jams for you!
                 .add_animation(new MenuAnimation("unstable_show", 0, 1, 0))
                 .add_animation(new MenuAnimation("unstable_show", 1, 1, 0, seqdir_left))
                 .add_animation(new MenuAnimation("unstable_fade", 1, 60, 0));
+        case "dungeon_equip_0":
+        case "dungeon_equip_1":
+        case "dungeon_equip_2":
+        case "dungeon_equip_3":
+            return new MenuObject(_name, o_button, _inst, sq_no_animation);
     }
 }

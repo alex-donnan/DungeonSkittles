@@ -25,6 +25,6 @@ if (col_dir == 0 || col_dir == 180) {
 }
 tilt_direction = point_direction(0, 0, x_pos, y_pos);
 
-other.armor--;
+other.armor -= damage + bonus_damage;
 
 bounce = true;

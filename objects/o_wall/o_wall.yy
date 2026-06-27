@@ -8,8 +8,8 @@
   "name":"o_wall",
   "overriddenProperties":[],
   "parent":{
-    "name":"Solids",
-    "path":"folders/Solids.yy",
+    "name":"Wall",
+    "path":"folders/Solids/Wall.yy",
   },
   "parentObjectId":null,
   "persistent":false,
