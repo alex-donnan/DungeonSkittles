@@ -1,4 +1,4 @@
-timer *= (rpm < unstable_rpm) ? 1.1 + random(0.6) : 1.1;
+timer += (rpm < unstable_rpm) ? 20 + random(60) : 20;
 accelerate += (rpm < unstable_rpm) ? 1 + random(1) : 1;
 
 while (place_meeting(x, y, o_enemy)) {
@@ -26,3 +26,5 @@ if (col_dir == 0 || col_dir == 180) {
 tilt_direction = point_direction(0, 0, x_pos, y_pos);
 
 other.armor--;
+
+bounce = true;

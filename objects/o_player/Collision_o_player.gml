@@ -1,4 +1,4 @@
-timer *= 0.95;
+timer -= 10;
 tilt_direction = point_direction(other.x, other.y, x, y);
 accelerate += (rpm < unstable_rpm) ? 1 + random(1) : 1;
 
@@ -10,3 +10,5 @@ while (place_meeting(x, y, o_player)) {
 }
 
 other.tilt_direction = (tilt_direction + 180) % 360;
+
+bounce = true;

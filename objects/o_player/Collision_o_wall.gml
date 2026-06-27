@@ -1,4 +1,4 @@
-timer *= (rpm < unstable_rpm) ? 1.05 + random(0.5) : 1.05;
+timer += (rpm < unstable_rpm) ? 5 + random(60) : 5;
 accelerate += (rpm < unstable_rpm) ? 1 + random(1) : 1;
 
 while (place_meeting(x, y, o_wall)) {
@@ -24,3 +24,5 @@ if (col_dir == 0 || col_dir == 180) {
     y_pos = dcos(tilt_direction) * sign_mod;
 }
 tilt_direction = point_direction(0, 0, x_pos, y_pos);
+
+bounce = true;

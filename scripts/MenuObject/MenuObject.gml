@@ -34,13 +34,11 @@ function MenuObject(_name, _type, _inst, _sequence, _ignore_animating = false) c
     }
     
     start_animation = function() {
-        print("started animation");
         animating = true;
         layer_sequence_play(layer_sequence);
     }
     
     stop_animation = function() {
-        print("stopped animation");
         animating = false;
         layer_sequence_pause(layer_sequence);
     }

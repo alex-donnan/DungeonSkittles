@@ -1,7 +1,7 @@
 function init_items() {
     return {
         "none": new PassiveItem(
-            "none", sp_secret,
+            "none", "none", sp_secret,
             "This item doesn't actually exist.",
             -1000, 1,
             function() {
@@ -12,33 +12,46 @@ function init_items() {
             }
         ),
         "gyroscope": new ActiveItem(
-            "Gyroscope", sp_gyroscope,
+            "gyroscope", "Gyroscope", sp_gyroscope,
             "Left click moves the top toward the mouse. Uses RPM.",
             0.5, 5,
             function() {
                 if (mouse_check_button(mb_left)) {
                     var player = instance_find(o_player, 0);
                     if (!is_null(player)) {
-                        player.tilt_direction = point_direction(player.x, player.y, mouse_x, mouse_y);
-                        player.timer += 0.5;
+                        if (player.bounce) timer = game_get_speed(gamespeed_fps) * 0.1;
+                        if (timer == 0) {
+                            player.tilt_direction = point_direction(player.x, player.y, mouse_x, mouse_y);
+                            player.timer += 0.5;
+                        } else {
+                            timer--;
+                        }
                     }
                 }
             }
         ),
         "rubber_wheel": new PassiveItem(
-            "Rubber Wheel", sp_rubber_wheel,
-            "The top is bouncier on contact.",
+            "rubber_wheel", "Rubber Wheel", sp_rubber_wheel,
+            "The top is bouncier on contact. Reduces bounce penalty.",
             1.5, 15,
-            function() {}
+            function() {
+                var player = instance_find(o_player, 0);
+                if (!is_null(player)) {
+                    if (player.bounce) {
+                        player.accelerate += 1;
+                        player.timer -= 5;
+                    }
+                }
+            }
         ),
         "wheel_weight": new PassiveItem(
-            "Wheel Weight", sp_wheel_weight,
+            "wheel_weight", "Wheel Weight", sp_wheel_weight,
             "A heavy weight for longer spins.",
-            3, 15,
+            5, 15,
             function() {}
         ),
         "drill_tip": new PassiveItem(
-            "Drill Tip", sp_drill_tip,
+            "drill_tip", "Drill Tip", sp_drill_tip,
             "Has a chance to dig up a gem. Higher potential at higher RPM.",
             2, 30,
             function() {
@@ -46,7 +59,7 @@ function init_items() {
                 
                 var player = instance_find(o_player, 0);
                 if (!is_null(player) && timer <= 0) {
-                    if (random(1) <= 0.1) {
+                    if (random(1) <= 0.25) {
                         instance_create_depth(
                             player.x, player.y, 0,
                             o_gem,
@@ -62,15 +75,21 @@ function init_items() {
             }
         ),
         "firecracker": new ActiveItem(
-            "Firecracker", sp_firecracker,
+            "firecracker", "Firecracker", sp_firecracker,
             "Right click fires a single use per run rocket that returns the top to starting RPM.",
             1, 50,
             function() {
-                
+                if (mouse_check_button(mb_right) && timer == 0) {
+                    var player = instance_find(o_player, 0);
+                    if (!is_null(player)) {
+                        player.timer = 0;   
+                    }
+                    timer = 1;
+                }
             }
         ),
         "deployer": new PassiveItem(
-            "Deployer", sp_deployer,
+            "deployer", "Deployer", sp_deployer,
             "Every 1000 spins releases a tiny top.",
             4, 100,
             function() {
@@ -92,7 +111,7 @@ function init_items() {
             }
         ),
         "gem_cutter": new PassiveItem(
-            "Gem Cutter", sp_gem_cutter,
+            "gem_cutter", "Gem Cutter", sp_gem_cutter,
             "Increases the value of gems collected based on RPM (up to 5)",
             2, 150,
             function() {
@@ -100,7 +119,7 @@ function init_items() {
             }
         ),
         "tesla_coil": new PassiveItem(
-            "Tesla Coil", sp_tesla_coil,
+            "tesla_coil", "Tesla Coil", sp_tesla_coil,
             "Every 2500 spins zaps a nearby enemy. Holds charge for valid targets.",
             1, 300,
             function() {
@@ -131,15 +150,34 @@ function init_items() {
             }
         ),
         "propeller_hat": new ActiveItem(
-            "Propeller Hat", sp_propeller_hat,
-            "Spacebar activates the hat to lose 25% current RPM and jump into the air.",
+            "propeller_hat", "Propeller Hat", sp_propeller_hat,
+            "Spacebar activates the hat to stop RPM loss for 10 seconds. After lose 25% maximum RPM.",
             -3, 250,
             function() {
-                
+                var player = instance_find(o_player, 0);
+                if (!is_null(player)) {
+                    if (timer == 0) {
+                        if (keyboard_check_pressed(vk_space)) {
+                            player.airborne = true;
+                            call_later(
+                                10,
+                                time_source_units_seconds,
+                                method({ player }, function() {
+                                    player.airborne = false;
+                                    print(game_get_speed(gamespeed_fps) * (ln(15 / player.start_rpm) * -player.half_life) / 4);
+                                    player.timer += game_get_speed(gamespeed_fps) * (ln(15 / player.start_rpm) * -player.half_life) / 4;
+                                })
+                            )
+                            timer = 20 * game_get_speed(gamespeed_fps);
+                        }
+                    } else {
+                        timer--;
+                    }
+                }
             }
         ),
         "unstable_attractor": new PassiveItem(
-            "Unstable Attractor", sp_unstable_attractor,
+            "unstable_attractor", "Unstable Attractor", sp_unstable_attractor,
             "While unstable, draws the top toward interesting objects.",
             0.1, 500,
             function() {
@@ -147,7 +185,7 @@ function init_items() {
             }
         ),
         "unstable_flywheel": new PassiveItem(
-            "Gem Cutter", sp_unstable_flywheel,
+            "unstable_flywheel", "Unstable Flywheel", sp_unstable_flywheel,
             "While unstable, has a chance to boost RPM a small amount.",
             0.23, 500,
             function() {
@@ -155,7 +193,7 @@ function init_items() {
             }
         ),
         "unstable_sawblade": new PassiveItem(
-            "Gem Cutter", sp_unstable_sawblade,
+            "unstable_sawblade", "Unstable Sawblade", sp_unstable_sawblade,
             "Deals bonus damage based on time spent unstable.",
             0.3, 500,
             function() {

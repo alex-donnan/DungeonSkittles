@@ -15,3 +15,6 @@ image_direction = 0;
 mouse_direction = point_direction(x, y, mouse_x, mouse_y);
 
 accelerate = 0;
+
+bounce = false;
+airborne = false;

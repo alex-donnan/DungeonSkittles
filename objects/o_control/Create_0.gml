@@ -26,6 +26,9 @@ menus = {};
 item_focus = "none";
 items = init_items();
 
+intro_sequence = undefined;
+outro_sequence = undefined;
+
 // Main menu states
 game_state.add_state(
     new State("main_menu")
@@ -43,6 +46,8 @@ game_state.add_state(
                 }
                 
                 menus[$ "main_menu"].activate();
+                menus[$ "main_menu"].animate("fast_close");
+                if (file_exists("skittle_dungeon_save.json")) menus[$ "main_menu"].animate("continue_enter");
                 menus[$ "main_menu"].animate("enter");
             }
         ).set_function(
@@ -66,7 +71,34 @@ game_state.add_state(
                 game_end();
             }
         )
-)
+);
+
+// Intro
+game_state.add_state(
+    new State("intro")
+        .set_function(
+            "enter",
+            function() {
+                intro_sequence = layer_sequence_create("GUI", WIDTH / 2, HEIGHT / 2, intro);
+                layer_sequence_play(intro_sequence);
+            }
+        ).set_function(
+            "update",
+            function() {
+                if (layer_sequence_is_finished(intro_sequence)) {
+                    print("BOOTY");
+                    game_state.set_state("shop_menu", "next");
+                    next_room = rm_shop;
+                    layer_sequence_destroy(intro_sequence);
+                }
+            }
+        ).set_function(
+            "leave",
+            function() {
+                room_goto(next_room);
+            }
+        )
+);
 
 // Shop states
 game_state.add_state(
@@ -93,6 +125,8 @@ game_state.add_state(
         ).set_function(
             "leave",
             function() {
+                player_stats.save();
+                
                 menus[$ "shop_menu"].deactivate();
                 room_goto(next_room);
             }
@@ -108,8 +142,13 @@ game_state.add_state(
                 game_camera.x = o_start.x;
                 game_camera.y = o_start.y;
                 
-                print(game_camera.x, game_camera.y);
-                print(game_camera.view);
+                // DUNGEON MENU
+                if (!struct_exists(menus, "dungeon_menu")) {
+                    new Menu("dungeon_menu").populate();
+                }
+                
+                menus[$ "dungeon_menu"].activate();
+                menus[$ "dungeon_menu"].animate("fast_close");
             }
         )
         .set_function(
@@ -137,17 +176,31 @@ game_state.add_state(
         .set_function(
             "update",
             function() {
+                player_stats.inventory.update();
                 if (o_player.crashed) {
-                    game_state.set_state("shop_menu", "next");
-                    next_room = rm_shop;
+                    game_state.set_state("dungeon_end", "next");
                 }
+            }
+        )
+).add_state(
+    new State("dungeon_end")
+        .set_function(
+            "enter",
+            function() {
+            }    
+        ).set_function(
+            "update",
+            function() {
+                game_state.set_state("shop_menu", "next");
+                next_room = rm_shop;
             }
         ).set_function(
             "leave",
             function() {
+                menus[$ "dungeon_menu"].deactivate();
                 game_camera.follow = undefined;
                 room_goto(next_room);
             }
         )
-);
+)
 game_state.set_state("main_menu", "next");

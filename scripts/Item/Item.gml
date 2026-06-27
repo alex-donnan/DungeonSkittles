@@ -1,4 +1,5 @@
-function Item(_name, _sprite, _description, _weight, _cost) constructor {
+function Item(_id, _name, _sprite, _description, _weight, _cost) constructor {
+    id = _id;
     name = _name;
     sprite = _sprite;
     description = _description;
@@ -11,10 +12,12 @@ function Item(_name, _sprite, _description, _weight, _cost) constructor {
     discovered_condition = undefined;
 }
 
-function PassiveItem(_name, _sprite, _description, _weight, _cost, _ability) : Item(_name,  _sprite, _description, _weight, _cost) constructor {
-    ability = _ability;
+function PassiveItem(_id, _name, _sprite, _description, _weight, _cost, _ability) :
+    Item(_id, _name,  _sprite, _description, _weight, _cost) constructor {
+    ability = method(self, _ability);
 }
 
-function ActiveItem(_name, _sprite, _description, _weight, _cost, _ability) : Item(_name,  _sprite, _description, _weight, _cost) constructor {
-    ability = _ability;
+function ActiveItem(_id, _name, _sprite, _description, _weight, _cost, _ability) :
+    Item(_id, _name,  _sprite, _description, _weight, _cost) constructor {
+    ability = method(self, _ability);
 }

@@ -1,3 +1,5 @@
+bounce = false;
+
 // Crash
 crashed = (abs(tilt_amount) > 60);
 if (crashed) {
@@ -6,7 +8,7 @@ if (crashed) {
 }
 
 // RPM
-timer++;
+if (!airborne) timer++;
 var t_sec = timer / game_get_speed(gamespeed_fps);
 rpm = start_rpm * exp(-t_sec / half_life);
 
@@ -29,7 +31,7 @@ tilt_amount = lerp(
 );
 
 // Move speed and bonus acceleration
-accelerate = min(2, lerp(accelerate + (tilt_amount / 60), 0, 0.2));
+accelerate = min(5, lerp(accelerate + (tilt_amount / 60), 0, 0.1));
 x += lengthdir_x((move_speed + accelerate) * min(1, rpm / critical_rpm), tilt_direction);
 y += lengthdir_y((move_speed + accelerate) * min(1, rpm / critical_rpm), tilt_direction);
 
