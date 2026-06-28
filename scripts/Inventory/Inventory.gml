@@ -10,7 +10,6 @@ function Inventory() constructor {
     // Add remove
     add_item = function(_pos, _item) {
         if (is_instanceof(_item, Item)) {
-            print(_item.name);
             var swap_spot = -1;
             for (var i = 0; i < 4; i++) {
                 if (items[$ string(i)] == _item) {

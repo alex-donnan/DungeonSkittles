@@ -21,7 +21,7 @@ function init_items() {
                     if (!is_null(player)) {
                         if (player.bounce) timer = game_get_speed(gamespeed_fps) * 0.1;
                         if (timer == 0) {
-                            player.tilt_direction = point_direction(player.x, player.y, mouse_x, mouse_y);
+                            player.tilt_direction = player.mouse_direction;
                             player.timer += 0.5;
                         } else {
                             timer--;
@@ -39,7 +39,7 @@ function init_items() {
                 if (!is_null(player)) {
                     if (player.bounce) {
                         player.accelerate += 1;
-                        player.timer -= 5;
+                        player.timer -= 30;
                     }
                 }
             }

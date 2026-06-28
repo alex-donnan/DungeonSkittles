@@ -1,3 +1,5 @@
 if (!active) exit;
-  
-//draw_sprite_ext(sprite_index, 0, x, y, image_xscale, image_yscale, 0, c_white, image_alpha);
+
+if (sprite_index != sp_window_source) { 
+    draw_sprite_stretched_ext(sprite_index, 0, x, y, width, height, c_white, image_alpha);
+}

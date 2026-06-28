@@ -88,10 +88,35 @@ game_state.add_state(
             "update",
             function() {
                 if (layer_sequence_is_finished(intro_sequence)) {
-                    print("BOOTY");
                     game_state.set_state("shop_menu", "next");
                     next_room = rm_shop;
                     layer_sequence_destroy(intro_sequence);
+                }
+            }
+        ).set_function(
+            "leave",
+            function() {
+                room_goto(next_room);
+            }
+        )
+);
+
+// Outro
+game_state.add_state(
+    new State("outro")
+        .set_function(
+            "enter",
+            function() {
+                outro_sequence = layer_sequence_create("GUI", WIDTH / 2, HEIGHT / 2, outro);
+                layer_sequence_play(outro_sequence);
+            }
+        ).set_function(
+            "update",
+            function() {
+                if (layer_sequence_is_finished(outro_sequence)) {
+                    game_state.set_state("main_menu", "next");
+                    next_room = rm_main;
+                    layer_sequence_destroy(outro_sequence);
                 }
             }
         ).set_function(
@@ -150,6 +175,19 @@ game_state.add_state(
                         { view: 1 }
                     );
                 }
+                dungeon_camera.active = true;
+                
+                // Create player
+                game_camera.follow = instance_create_depth(
+                    o_start.x, o_start.y, 0,
+                    o_player, {
+                        active: false,
+                        rpm: player_stats.start_rpm,
+                        half_life: player_stats.half_life,
+                        weight: player_stats.weight,
+                        tilt_direction: point_direction(o_start.x, o_start.y, mouse_x, mouse_y)
+                    }
+                );
                 
                 //Remove found artifacts
                 with (o_artifact) {
@@ -178,14 +216,9 @@ game_state.add_state(
         ).set_function(
             "leave",
             function() {
-                // Create player
-                game_camera.follow = instance_create_depth(
-                    o_start.x, o_start.y, 0,
-                    o_player, {
-                        rpm: 450,
-                        tilt_direction: point_direction(o_start.x, o_start.y, mouse_x, mouse_y)
-                    }
-                );
+                var player = instance_find(o_player, 0);
+                player.active = true;
+                player.tilt_direction = player.mouse_direction;
             }
         )
 ).add_state(
@@ -194,7 +227,52 @@ game_state.add_state(
             "update",
             function() {
                 player_stats.inventory.update();
-                if (o_player.crashed) {
+                var player = instance_find(o_player, 0);
+                
+                if (player.rpm < player.unstable_rpm) {
+                    menus[$ "dungeon_menu"].animate("unstable_fade");
+                }
+                
+                // CHeck our unstables
+                if (player.timer_unstable > 60 * game_get_speed(gamespeed_fps)) {
+                    if (items[$ "unstable_sawblade"].discovered == false) {
+                        items[$ "unstable_sawblade"].discovered = true;
+                        menus[$ "dungeon_menu"].animate("found_item");
+                        call_later(
+                            5,
+                            time_source_units_seconds,
+                            function() {
+                                o_control.menus[$ "dungeon_menu"].animate("close_found_item");
+                            }
+                        );
+                    }
+                } else if (player.timer_unstable > 45 * game_get_speed(gamespeed_fps)) {
+                    if (!items[$ "unstable_flywheel"].discovered == false) {
+                        items[$ "unstable_flywheel"].discovered = true;
+                        menus[$ "dungeon_menu"].animate("found_item");
+                        call_later(
+                            5,
+                            time_source_units_seconds,
+                            function() {
+                                o_control.menus[$ "dungeon_menu"].animate("close_found_item");
+                            }
+                        );
+                    }
+                } else if (player.timer_unstable > 30 * game_get_speed(gamespeed_fps)) {
+                    if (!items[$ "unstable_attractor"].discovered == false) {
+                        items[$ "unstable_attractor"].discovered = true;
+                        menus[$ "dungeon_menu"].animate("found_item");
+                        call_later(
+                            5,
+                            time_source_units_seconds,
+                            function() {
+                                o_control.menus[$ "dungeon_menu"].animate("close_found_item");
+                            }
+                        );
+                    }
+                }
+                
+                if (player.crashed) {
                     game_state.set_state("dungeon_end", "next");
                 }
             }
@@ -204,21 +282,41 @@ game_state.add_state(
         .set_function(
             "enter",
             function() {
-            }    
+                menus[$ "dungeon_menu"].animate("open_crash");
+            }
         ).set_function(
             "update",
             function() {
-                game_state.set_state("shop_menu", "next");
-                next_room = rm_shop;
+                menus[$ "dungeon_menu"].update();
+            }
+        ).set_function(
+            "leave",
+            function() {
+                menus[$ "dungeon_menu"].animate("fast_close");
+                menus[$ "dungeon_menu"].deactivate();
+                camera_destroy(dungeon_camera.camera);
+                dungeon_camera.active = false;
+                game_camera.follow = undefined;
+                room_goto(next_room);
+            }
+        )
+).add_state(
+    new State("dungeon_win")
+        .set_function(
+            "update",
+            function() {
+                game_state.set_state("outro", "next");
+                next_room = rm_outro;
             }
         ).set_function(
             "leave",
             function() {
                 menus[$ "dungeon_menu"].deactivate();
                 camera_destroy(dungeon_camera.camera);
+                dungeon_camera.active = false;
                 game_camera.follow = undefined;
                 room_goto(next_room);
             }
         )
-)
+);
 game_state.set_state("main_menu", "next");

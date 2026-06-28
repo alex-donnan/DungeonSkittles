@@ -5,4 +5,5 @@ function MenuAnimation(_name, _in, _length, _delay, _dir = seqdir_right, _previo
     delay = _delay;
     dir = _dir;
     previous_anim = _previous_anim;
+    end_anim = undefined;
 }

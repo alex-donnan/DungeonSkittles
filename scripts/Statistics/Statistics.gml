@@ -1,12 +1,36 @@
 function Statistics() constructor {
     inventory = new Inventory();
     
+    original_stats = {
+        start_rpm: 500,
+        half_life: 500 / 20,
+        weight: 2,
+        height: 0.1,
+        radius: 2
+    }
+    
     // Upgrades
     start_rpm = 500;
-    half_life = start_rpm / 20;
+    half_life = start_rpm / 50;
     weight = 2;
+    unstable_rpm = 0;
     height = 0.1;
     radius = 2;
+    
+    update = function() {
+        weight = original_stats.weight + (
+            (is_null(inventory.items[$ "0"]) ? 0 : inventory.items[$ "0"].weight) +
+            (is_null(inventory.items[$ "1"]) ? 0 : inventory.items[$ "1"].weight) +
+            (is_null(inventory.items[$ "2"]) ? 0 : inventory.items[$ "2"].weight) +
+            (is_null(inventory.items[$ "3"]) ? 0 : inventory.items[$ "3"].weight)
+        );
+        var w_kg = weight / 1000;
+        var amiu = (w_kg * power(radius, 2)) / 2;
+        unstable_rpm = 2 * sqrt(9.81 * (0.001 + power(height, 2)) * height) / amiu;
+        
+        half_life = start_rpm / (50 - (30 * (start_rpm / 5000)));
+    } 
+    
     move_influence = 1.2;
     move_speed = 2;
     gems = 0;

@@ -1,4 +1,4 @@
-timer += (rpm < unstable_rpm) ? 20 + random(60) : 20;
+timer += (rpm < unstable_rpm) ? 60 + random(120) : 60;
 accelerate += (rpm < unstable_rpm) ? 1 + random(1) : 1;
 
 while (place_meeting(x, y, o_enemy)) {

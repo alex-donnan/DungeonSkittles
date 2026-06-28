@@ -55,6 +55,11 @@ function MenuObject(_name, _type, _inst, _sequence, _ignore_animating = false) c
             layer_sequence_headpos(layer_sequence, anim.in);
             layer_sequence_headdir(layer_sequence, anim.dir);
             
+            if (!is_null(anim.end_anim) && time_source_exists(anim.end_anim)) {
+                call_cancel(anim.end_anim);
+                anim.end_anim = undefined;
+            }
+            
             if (anim.delay > 0) {
                 call_later(
                     anim.delay,
@@ -67,7 +72,7 @@ function MenuObject(_name, _type, _inst, _sequence, _ignore_animating = false) c
             }
             
             if (anim.delay + anim.length > 0) {
-                call_later(
+                anim.end_anim = call_later(
                     anim.delay + anim.length + 1,
                     time_source_units_frames,
                     stop_animation,

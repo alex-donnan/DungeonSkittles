@@ -1,4 +1,4 @@
-timer += (rpm < unstable_rpm) ? 5 + random(60) : 5;
+timer += (rpm < unstable_rpm) ? 30 + random(60) : 30;
 accelerate += (rpm < unstable_rpm) ? 1 + random(1) : 1;
 
 while (place_meeting(x, y, o_wall)) {
